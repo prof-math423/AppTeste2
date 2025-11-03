@@ -1,39 +1,71 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using Salario.Commands;
-using Salario.Models;
+﻿// SalarioViewModel.cs (versão recomendada)
+using System;
+using System.Globalization;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using AppTeste.Models;
 
-namespace Salario.ViewModels
+namespace AppTeste.ViewModels
 {
-    public class SalarioViewModel : INotifyPropertyChanged
+    public class SalarioViewModel : ObservableObject
     {
-        private readonly SalarioModel _salario = new SalarioModel();
+        private readonly Salario _salario = new Salario();
         private decimal _salarioCalculado;
 
-        public decimal ValorHora
+        public IRelayCommand CalcularSalarioCommand { get; }
+
+        public SalarioViewModel()
         {
-            get => _salario.ValorHora;
+            CalcularSalarioCommand = new RelayCommand(
+                execute: () => CalcularSalario(),
+                canExecute: () => PodeCalcular()
+            );
+            // inicializações opcionais
+            ValorHoraString = string.Empty;
+            HorasTrabalhadasString = string.Empty;
+        }
+
+        // Propriedades string usadas pelo Entry (TwoWay)
+        private string _valorHoraString;
+        public string ValorHoraString
+        {
+            get => _valorHoraString;
             set
             {
-                if (_salario.ValorHora != value)
+                if (SetProperty(ref _valorHoraString, value))
                 {
-                    _salario.ValorHora = value;
-                    OnPropertyChanged();
+                    // tenta atualizar o model (sem lançar)
+                    if (TryParseDecimal(value, out var parsed))
+                    {
+                        _salario.ValorHora = parsed;
+                    }
+                    else
+                    {
+                        _salario.ValorHora = 0m;
+                    }
+                    CalcularSalarioCommand.NotifyCanExecuteChanged();
                     OnPropertyChanged(nameof(SalarioCalculado));
                 }
             }
         }
 
-        public decimal HorasTrabalhadas
+        private string _horasTrabalhadasString;
+        public string HorasTrabalhadasString
         {
-            get => _salario.HorasTrabalhadas;
+            get => _horasTrabalhadasString;
             set
             {
-                if (_salario.HorasTrabalhadas != value)
+                if (SetProperty(ref _horasTrabalhadasString, value))
                 {
-                    _salario.HorasTrabalhadas = value;
-                    OnPropertyChanged();
+                    if (TryParseDecimal(value, out var parsed))
+                    {
+                        _salario.HorasTrabalhadas = parsed;
+                    }
+                    else
+                    {
+                        _salario.HorasTrabalhadas = 0m;
+                    }
+                    CalcularSalarioCommand.NotifyCanExecuteChanged();
                     OnPropertyChanged(nameof(SalarioCalculado));
                 }
             }
@@ -42,43 +74,36 @@ namespace Salario.ViewModels
         public decimal SalarioCalculado
         {
             get => _salarioCalculado;
-            private set
-            {
-                if (_salarioCalculado != value)
-                {
-                    _salarioCalculado = value;
-                    OnPropertyChanged();
-                }
-            }
+            private set => SetProperty(ref _salarioCalculado, value);
         }
 
-        public ICommand CalcularSalarioCommand { get; }
-
-        public SalarioViewModel()
-        {
-            // RelayCommand espera Action<object?> e Func<object?, bool>
-            CalcularSalarioCommand = new RelayCommand(
-                param => CalcularSalario(param),
-                param => PodeCalcular(param)
-            );
-        }
-
-        private bool PodeCalcular(object? parameter)
-        {
-            return ValorHora > 0 && HorasTrabalhadas > 0;
-        }
-
-        private void CalcularSalario(object? parameter)
+        private void CalcularSalario()
         {
             SalarioCalculado = _salario.CalcularSalario();
         }
 
-        // Implementação do INotifyPropertyChanged
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string? nomePropriedade = null)
+        private bool PodeCalcular()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nomePropriedade));
+            return _salario.ValorHora > 0m && _salario.HorasTrabalhadas > 0m;
+        }
+
+        // tenta parsear considerando vírgula/ponto de acordo com cultura
+        private bool TryParseDecimal(string s, out decimal result)
+        {
+            result = 0m;
+            if (string.IsNullOrWhiteSpace(s))
+                return false;
+
+            // tenta com CurrentCulture e InvariantCulture (aceita 1,23 e 1.23)
+            if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.CurrentCulture, out result))
+                return true;
+            if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
+                return true;
+
+            // remover espaços e tentar novamente
+            var cleaned = s.Trim();
+            return decimal.TryParse(cleaned, NumberStyles.Number, CultureInfo.CurrentCulture, out result)
+                || decimal.TryParse(cleaned, NumberStyles.Number, CultureInfo.InvariantCulture, out result);
         }
     }
 }

@@ -1,45 +1,41 @@
-<Window x:Class="Salario.Views.SalarioView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:Salario.ViewModels"
-        Title="Calculadora de Salário" 
-        Height="220" Width="320">
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:AppTeste.ViewModels"
+             x:Class="AppTeste.Views.SalarioView"
+             Title="Calculadora de Salário">
 
-    <Window.DataContext>
+    <ContentPage.BindingContext>
         <vm:SalarioViewModel />
-    </Window.DataContext>
+    </ContentPage.BindingContext>
 
+    <ScrollView>
+        <StackLayout Margin="20">
+            <Label Text="Calculadora de Salário" FontSize="Large" FontAttributes="Bold" Margin="0,0,0,10"/>
 
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+            <HorizontalStackLayout Spacing="10" Margin="0,0,0,10">
+                <Label Text="Valor Hora:" VerticalOptions="Center" WidthRequest="130"/>
+                <Entry Placeholder="0.00"
+                       Keyboard="Numeric"
+                       WidthRequest="140"
+                       Text="{Binding ValorHoraString, Mode=TwoWay}" />
+            </HorizontalStackLayout>
 
-        <!-- Valor Hora -->
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,5">
-            <Label Content="Valor Hora:" Width="130" VerticalAlignment="Center"/>
-            <TextBox Width="140" 
-                     Text="{Binding ValorHora, UpdateSourceTrigger=PropertyChanged}" />
-        </StackPanel>
+            <HorizontalStackLayout Spacing="10" Margin="0,0,0,10">
+                <Label Text="Horas Trabalhadas:" VerticalOptions="Center" WidthRequest="130"/>
+                <Entry Placeholder="0"
+                       Keyboard="Numeric"
+                       WidthRequest="140"
+                       Text="{Binding HorasTrabalhadasString, Mode=TwoWay}" />
+            </HorizontalStackLayout>
 
-        <!-- Horas Trabalhadas -->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,0,0,5">
-            <Label Content="Horas Trabalhadas:" Width="130" VerticalAlignment="Center"/>
-            <TextBox Width="140" 
-                     Text="{Binding HorasTrabalhadas, UpdateSourceTrigger=PropertyChanged}" />
-        </StackPanel>
+            <Button Text="Calcular" HorizontalOptions="Start"
+                    Command="{Binding CalcularSalarioCommand}"
+                    WidthRequest="150" Margin="0,10,0,10"/>
 
-        <!-- Botão -->
-        <Button Grid.Row="2" Content="Calcular" Width="100" 
-                HorizontalAlignment="Left"
-                Command="{Binding CalcularSalarioCommand}" />
-
-        <!-- Resultado -->
-        <TextBlock Grid.Row="3" Margin="0,10,0,0" 
-                   FontWeight="Bold" FontSize="16"
+            <Label Margin="0,10,0,0"
+                   FontAttributes="Bold" FontSize="Medium"
                    Text="{Binding SalarioCalculado, StringFormat='Salário: {0:C}'}" />
-    </Grid>
-</Window>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

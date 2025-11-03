@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:AppTeste"
+    xmlns:viewSalario="clr-namespace:AppTeste.Views"
     xmlns:viewCoin="clr-namespace:AppTeste.Views"
     Shell.FlyoutBehavior="Flyout"
     Title="AppTeste">
@@ -17,10 +18,10 @@
         Title="Cara ou Coroa"
         ContentTemplate="{DataTemplate viewCoin:CoinView}"
         />
-	
-	<ShellContent
+
+    <ShellContent
         Title="Calculadora de Salario"
-		ContentTemplate="{DataTemplate viewSalario:SlarioView"
-		Route="SalarioView" />
+        ContentTemplate="{DataTemplate viewSalario:SalarioView}"
+        Route="SalarioView" />
 
 </Shell>

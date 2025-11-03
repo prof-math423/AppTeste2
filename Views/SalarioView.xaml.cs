@@ -1,12 +1,9 @@
-using System.Windows;
-
-namespace Salario.Views
+// SalarioView.xaml.cs
+namespace AppTeste.Views;
+public partial class SalarioView : ContentPage
 {
-    public partial class SalarioView : Window
+    public SalarioView()
     {
-        public SalarioView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }
