@@ -17,5 +17,10 @@
         Title="Cara ou Coroa"
         ContentTemplate="{DataTemplate viewCoin:CoinView}"
         />
+	
+	<ShellContent
+        Title="Calculadora de Salario"
+		ContentTemplate="{DataTemplate viewSalario:SlarioView"
+		Route="SalarioView" />
 
 </Shell>
