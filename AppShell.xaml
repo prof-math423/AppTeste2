@@ -9,19 +9,21 @@
     Shell.FlyoutBehavior="Flyout"
     Title="AppTeste">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent
+            Title="Home"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
 
-    <ShellContent
-        Title="Cara ou Coroa"
-        ContentTemplate="{DataTemplate viewCoin:CoinView}"
-        />
+        <ShellContent
+            Title="Cara ou Coroa"
+            ContentTemplate="{DataTemplate viewCoin:CoinView}"
+            />
 
-    <ShellContent
-        Title="Calculadora de Salario"
-        ContentTemplate="{DataTemplate viewSalario:SalarioView}"
-        Route="SalarioView" />
-
+        <ShellContent
+            Title="Calculadora de Salario"
+            ContentTemplate="{DataTemplate viewSalario:SalarioView}"
+            Route="SalarioView" />
+    </TabBar>
+    
 </Shell>
